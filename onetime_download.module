@@ -1,0 +1,47 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ *
+ * @todo Add a unique url for the api
+ */
+function onetime_download_menu() {
+  // Define a listener endpoint for the api calls.
+  $items['onetime_download/api/%'] = array(
+    'page callback' => 'onetime_download_verify_api_confirm',
+    'page arguments' => array(2),
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+
+/**
+ * Callback function for hook_menu
+ *
+ * @param [string] $key Unique key
+ */
+function onetime_download_verify_api_confirm($key) {
+  $status = _key_verify_verify_key_status($key);
+
+  if (!$status) {
+    drupal_set_message('Key does not exist.');
+  }
+  elseif ($status == 'inactive'){
+    drupal_set_message('Key is expired.');
+  }
+  elseif ($status == 'active') {
+    // $key_object = _key_verify_load_verify_key($key);
+    // if ($key_object) {
+    //   $file = file_load($key_object->message['fid']);
+    //   $file_url = file_create_url($file->uri);
+    // }
+    // Set the verify key status to inactive.
+    _key_verify_change_verify_key_status($key, 'inactive');
+    drupal_set_message('Key validated.');
+  }
+
+  return '';
+}

@@ -1,0 +1,4 @@
+name = Onetime Download
+description = Offer onetime download links to private files.
+core = 7.x
+dependencies[] = key_verify
